@@ -1,0 +1,10 @@
+extends layout
+
+block content
+    h1= title
+    form(action='' method='post')
+        input(type='text' name='tododescription')
+        button(type='submit') Add
+    ul
+        each val in todos
+            li= val.tododesc
