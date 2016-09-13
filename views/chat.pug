@@ -1,0 +1,13 @@
+doctype html
+html
+    head
+        title= title
+        link(rel='stylesheet', href='/stylesheets/chat.css')
+    body
+        section(class='content')
+          ul(id='messages')
+          input(type='text' id='m' autocomplete='off' placeholder='Your message')
+
+        script(src='/socket.io/socket.io.js')
+        script(src='http://code.jquery.com/jquery-1.11.1.js')
+        script(src='/javascripts/socket.js')
