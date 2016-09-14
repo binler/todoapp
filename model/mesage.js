@@ -1,6 +1,14 @@
 var mongoose = require('mongoose');
 var messageSchema = new mongoose.Schema({
-    message: String,
-    created_at: {type: Date, default: Date.now}
+    message: {
+        type: String,
+        trim: true,
+        required: true
+    }
+}, {
+    timestamps: {
+        createdAt: 'created_at',
+        updatedAt: 'update_at'
+    }
 });
 mongoose.model('Messages', messageSchema);

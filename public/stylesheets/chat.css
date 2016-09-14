@@ -27,6 +27,7 @@ ul {
     width: 100%;
     height: 100%;
     display: block;
+    position: relative;
 }
 
 .content #m {
@@ -39,8 +40,12 @@ ul {
 }
 #messages {
   width: 100%;
-  height: auto;
-  padding: 0;margin: 0px;
+  height: calc(100% - 50px);
+  padding: 0;
+  margin: 0px;
+  display: block;
+  position: relative;
+  overflow-Y: scroll;
 }
 
 ul li {

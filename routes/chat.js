@@ -5,9 +5,11 @@ var express = require('express'),
     methodOverride = require('method-override');
 
 
+
 router.use(bodyParser.urlencoded({
     extended: true
 }));
+
 
 router.use(methodOverride(function(req, res) {
     if (req.body && typeof req.body === 'object' && '_method' in req.body) {
@@ -22,12 +24,25 @@ router.use(methodOverride(function(req, res) {
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-    var io = req.app.io;
+    mongoose.model('Messages').find({}, function(err, results){
+      if (err) {
+        res.send("have problem");
+      } else {
+        res.render('chat',{
+          title: 'Chat Application',
+          messages: results
+        });
+      }
+    });
+});
+
+module.exports = function(io) {
+
     io.on('connection', function(socket) {
+        console.log('a user connect');
         socket.on('chat message', function(data) {
             mongoose.model('Messages').create({
-                message: data.message,
-                created_at: data.created_at
+                message: data.message
             }, function(err, results) {
                 if (err) {
                     res.send('Co loi');
@@ -37,27 +52,7 @@ router.get('/', function(req, res, next) {
             });
         });
     });
-    res.render('chat', {
-        title: 'Chat Example'
-    });
-});
 
 
-// app.io.on('connection', function(socket) {
-//     console.log('a user connected');
-//     socket.on('chat message', function(data) {
-//         mongoose.model('Messages').create({
-//             message: data.message,
-//             created_at: data.created_at
-//         }, function(err, results) {
-//             if (err) {
-//                 res.send('Co loi');
-//             } else {
-//                 app.io.emit('chat message', data);
-//             }
-//         });
-//     });
-// });
-
-
-module.exports = router;
+    return router;
+};

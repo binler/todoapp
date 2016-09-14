@@ -15,7 +15,7 @@ var db = require('./model/db'),
 var routes = require('./routes/index'),
     users = require('./routes/users'),
     todos = require('./routes/todo'),
-    chats = require('./routes/chat');
+    chats = require('./routes/chat')(app.io);
 
 
 
