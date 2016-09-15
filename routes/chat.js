@@ -20,19 +20,31 @@ router.use(methodOverride(function(req, res) {
     }
 }));
 
+function getCurrentTime(t) {
+    var currentTime = t || new Date();
+    var h = currentTime.getHours(),
+        m = currentTime.getMinutes();
+    if (h < 10) {
+        h = '0' + h;
+    }
+    if (m < 10) {
+        m = '0' + m;
+    }
+    return h + ':' + m;
+}
 
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-    mongoose.model('Messages').find({}, function(err, results){
-      if (err) {
-        res.send("have problem");
-      } else {
-        res.render('chat',{
-          title: 'Chat Application',
-          messages: results
-        });
-      }
+    mongoose.model('Messages').find({}, function(err, results) {
+        if (err) {
+            res.send("have problem");
+        } else {
+            res.render('chat', {
+                title: 'Chat Application',
+                messages: results
+            });
+        }
     });
 });
 
@@ -42,8 +54,9 @@ module.exports = function(io) {
         console.log('a user connect');
         socket.on('chat message', function(data) {
             mongoose.model('Messages').create({
-                message: data.message
-            }, function(err, results) {
+                message: data.message,
+                created_at : new Date()
+            }, function(err, result) {
                 if (err) {
                     res.send('Co loi');
                 } else {

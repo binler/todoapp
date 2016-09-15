@@ -4,11 +4,7 @@ var messageSchema = new mongoose.Schema({
         type: String,
         trim: true,
         required: true
-    }
-}, {
-    timestamps: {
-        createdAt: 'created_at',
-        updatedAt: 'update_at'
-    }
+    },
+    created_at : {type: Date, default: Date.now()}
 });
 mongoose.model('Messages', messageSchema);

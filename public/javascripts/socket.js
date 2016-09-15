@@ -11,9 +11,13 @@ $(function() {
         var currentTime = t || new Date();
         var h = currentTime.getHours(),
             m = currentTime.getMinutes();
-        if(h < 10) {h = '0'+h};
-        if(m < 10) {m = '0'+m};
-        return h+':'+m;
+        if (h < 10) {
+            h = '0' + h
+        };
+        if (m < 10) {
+            m = '0' + m
+        };
+        return h + ':' + m;
     }
 
     /**
