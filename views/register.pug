@@ -1,0 +1,10 @@
+extends layout
+
+block content
+    h1.caption= title
+    .container.white
+        form(method='post' class='gd-form login' action='/admin/register')
+            input(type='text' required placeholder='Your Username' class='gd-input' name='username')
+            input(type='password' required placeholder='Your Password' class='gd-input' name='password')
+            button(type='submit' class='gd-button bt-blue') Register
+            a(href='/admin/login') Login

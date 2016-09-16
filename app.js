@@ -4,9 +4,10 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-
-const session = require('express-session');
-const MongoStore = require('connect-mongo')(session);
+var mongoose = require('mongoose');
+var passport = require('passport');
+var LocalStrategy = require('passport-local').Strategy;
+var flash = require('connect-flash');
 
 var app = express();
 app.io = require('socket.io')();
@@ -37,27 +38,34 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
     extended: false
 }));
-app.use(cookieParser('keyboard cat'));
+app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.set('trust proxy', 1);
-app.use(session({
-    secret: 'keyboard cat',
-    saveUninitialized: true, // don't create session until something stored
-    resave: false, //don't save session if unmodified
-    cookie: {
-        secure: true
-    },
-    store: new MongoStore({
-        url: 'mongodb://localhost/testdb'
-    })
+// Setup Session
+app.use(require('express-session')({
+    secret: 'a4f8071f-c873-4447-8ee2',
+    resave: false,
+    saveUninitialized: false
 }));
 
+app.use(passport.initialize());
+app.use(flash());
+app.use(passport.session());
+
+// Registry Router
 app.use('/', routes);
 app.use('/users', users);
 app.use('/todos', todos);
 app.use('/chat', chats);
 app.use('/admin', admins);
+
+// Passport config
+var Account = require('./model/account');
+passport.use(new LocalStrategy(Account.authenticate()));
+passport.serializeUser(Account.serializeUser());
+passport.deserializeUser(Account.deserializeUser());
+
+// https://namvuhn.wordpress.com/2016/05/10/nodejs-tim-hieu-ve-module-mongoose-trong-nodejs/
 
 
 

@@ -35,33 +35,42 @@ function getCurrentTime(t) {
 
 
 /* GET home page. */
-router.get('/', function(req, res, next) {
-    mongoose.model('Messages').find({}, function(err, results) {
-        if (err) {
-            res.send("have problem");
+router.route('/')
+    .all(function(req, res, next) {
+        if (!req.user) {
+            res.redirect('/admin/login');
         } else {
-            res.render('chat', {
-                title: 'Chat Application',
-                messages: results
-            });
+            next();
         }
+    })
+    .get(function(req, res, next) {
+        mongoose.model('Messages').find({}, function(err, results) {
+            if (err) {
+                res.send("have problem");
+            } else {
+                res.render('chat', {
+                    title: 'Chat Application',
+                    messages: results
+                });
+            }
+        });
     });
-});
 
 module.exports = function(io) {
 
     io.on('connection', function(socket) {
         console.log('a user connect');
         socket.on('chat message', function(data) {
+          console.log(req);
             mongoose.model('Messages').create({
                 message: data.message,
-                created_at : new Date()
+                created_at: new Date()
             }, function(err, result) {
                 if (err) {
                     res.send('Co loi');
-                } else {
-                    io.emit('chat message', data);
                 }
+                io.emit('chat message', data);
+
             });
         });
     });

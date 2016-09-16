@@ -1,8 +1,12 @@
 doctype html
 html
-  head
-    title= title
-    link(rel='stylesheet', href='/stylesheets/style.css')
-    script(src='http://code.jquery.com/jquery-1.11.1.js')
-  body
-    block content
+    head
+        title= title
+        link(rel='stylesheet', href='/stylesheets/style.css')
+        script(src='http://code.jquery.com/jquery-1.11.1.js')
+    body
+        if (error && error.length > 0)
+            br
+            p= error
+            br
+        block content

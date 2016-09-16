@@ -1,4 +1,10 @@
 extends layout
 
 block content
-  h1  Hello World
+    .container
+        if (user)
+            p You are currently logged in as #{user.username}
+            p You id #{user._id}
+            a(href='/chat') Chat
+            br
+            a(href="admin/logout") Logout
