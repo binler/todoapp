@@ -6,10 +6,6 @@ html
     body
         section(class='content')
             ul(id='messages')
-                each val in messages
-                    li= val.message
-                        br
-                        span(class='time-create')= val.created_at.toLocaleTimeString()
 
             input(type='text' id='m' autocomplete='off' placeholder='Your message')
 

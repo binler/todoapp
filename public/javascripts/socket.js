@@ -33,6 +33,10 @@ $(function() {
         }, s);
     }
 
+    function displayMessage(data){
+      $('#messages').append('<li>' + data.message + '</br>' + '<span class="time-create">' + data.created_at + '</span>' + '</li>');
+    }
+
     $window.load(function() {
         loadMessage(100);
     });
@@ -51,8 +55,14 @@ $(function() {
         }
     });
 
+    socket.on('load old messages', function(messages){
+      for (var i = 0; i < messages.length; i++) {
+        displayMessage(messages[i]);
+      }
+    });
+
     socket.on('chat message', function(data) {
-        $('#messages').append('<li>' + data.message + '</br>' + '<span class="time-create">' + data.created_at + '</span>' + '</li>');
+        displayMessage(data);
         loadMessage(500);
     });
 

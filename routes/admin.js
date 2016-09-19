@@ -20,10 +20,10 @@ router.use(methodOverride(function(req, res) {
 
 router.route('/')
     .all(function(req, res, next) {
-        if (!req.user) {
-            res.redirect('/admin/login');
+        if(req.isAuthenticated()){
+          next();
         } else {
-            next();
+          res.redirect('/admin/login');
         }
     })
     .get(function(req, res, next) {

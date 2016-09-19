@@ -4,7 +4,7 @@ block content
     h1.caption= title
     .container.white
         form(method='post' class='gd-form login' action='/admin/login')
-            input(type='text' required placeholder='Username' class='gd-input' name='username')
+            input(type='text' autofocus required placeholder='Username' class='gd-input' name='username')
             input(type='password' required placeholder='Password' class='gd-input' name='password')
             button(type='submit' class='gd-button bt-blue') Login
             a(href='/admin/register') Register

@@ -10,9 +10,8 @@ var LocalStrategy = require('passport-local').Strategy;
 var flash = require('connect-flash');
 
 var app = express();
+
 app.io = require('socket.io')();
-
-
 
 var db = require('./model/db'),
     todo = require('./model/todo'),
@@ -45,7 +44,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(require('express-session')({
     secret: 'a4f8071f-c873-4447-8ee2',
     resave: false,
-    saveUninitialized: false
+    saveUninitialized: true
 }));
 
 app.use(passport.initialize());
@@ -59,6 +58,7 @@ app.use('/todos', todos);
 app.use('/chat', chats);
 app.use('/admin', admins);
 
+
 // Passport config
 var Account = require('./model/account');
 passport.use(new LocalStrategy(Account.authenticate()));
@@ -66,7 +66,6 @@ passport.serializeUser(Account.serializeUser());
 passport.deserializeUser(Account.deserializeUser());
 
 // https://namvuhn.wordpress.com/2016/05/10/nodejs-tim-hieu-ve-module-mongoose-trong-nodejs/
-
 
 
 // catch 404 and forward to error handler

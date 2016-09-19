@@ -2,14 +2,13 @@ var express = require('express'),
     router = express.Router(),
     mongoose = require('mongoose'),
     bodyParser = require('body-parser'),
+    passport = require('passport'),
     methodOverride = require('method-override');
-
 
 
 router.use(bodyParser.urlencoded({
     extended: true
 }));
-
 
 router.use(methodOverride(function(req, res) {
     if (req.body && typeof req.body === 'object' && '_method' in req.body) {
@@ -37,44 +36,37 @@ function getCurrentTime(t) {
 /* GET home page. */
 router.route('/')
     .all(function(req, res, next) {
-        if (!req.user) {
-            res.redirect('/admin/login');
-        } else {
+        if (req.isAuthenticated()) {
             next();
+        } else {
+            res.redirect('/admin/login');
         }
     })
     .get(function(req, res, next) {
-        mongoose.model('Messages').find({}, function(err, results) {
-            if (err) {
-                res.send("have problem");
-            } else {
-                res.render('chat', {
-                    title: 'Chat Application',
-                    messages: results
-                });
-            }
-        });
+      res.render('chat');
     });
 
 module.exports = function(io) {
 
     io.on('connection', function(socket) {
-        console.log('a user connect');
+
+        mongoose.model('Messages').find({}, function(err, messages) {
+            if (err) throw err;
+            socket.emit('load old messages', messages);
+        });
+
         socket.on('chat message', function(data) {
-          console.log(req);
             mongoose.model('Messages').create({
                 message: data.message,
                 created_at: new Date()
             }, function(err, result) {
-                if (err) {
-                    res.send('Co loi');
-                }
+                if (err) throw err;
                 io.emit('chat message', data);
-
             });
         });
-    });
 
+
+    });
 
     return router;
 };
