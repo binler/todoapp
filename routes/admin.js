@@ -20,10 +20,10 @@ router.use(methodOverride(function(req, res) {
 
 router.route('/')
     .all(function(req, res, next) {
-        if(req.isAuthenticated()){
-          next();
+        if (req.isAuthenticated()) {
+            next();
         } else {
-          res.redirect('/admin/login');
+            res.redirect('/admin/login');
         }
     })
     .get(function(req, res, next) {
@@ -93,4 +93,26 @@ router.get('/logout', function(req, res, next) {
 
 
 
-module.exports = router;
+module.exports = function(io) {
+
+    io.on('connection', function(socket) {
+        mongoose.model('Messages').find({}, function(err, messages) {
+            if (err) throw err;
+            socket.emit('load old messages', messages);
+        });
+
+        socket.on('chat message', function(data) {
+            mongoose.model('Messages').create({
+                message: data.message,
+                created_at: new Date()
+            }, function(err, result) {
+                if (err) throw err;
+                io.emit('chat message', data);
+            });
+        });
+
+
+    });
+
+    return router;
+};

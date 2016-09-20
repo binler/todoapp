@@ -1,5 +1,5 @@
 $(function() {
-    var socket = io();
+    var socket = io.connect('http://localhost:3000');
     var $window = $(window);
 
 
@@ -33,13 +33,9 @@ $(function() {
         }, s);
     }
 
-    function displayMessage(data){
-      $('#messages').append('<li>' + data.message + '</br>' + '<span class="time-create">' + data.created_at + '</span>' + '</li>');
+    function displayMessage(data) {
+        $('#messages').append('<li>' + data.message + '</br>' + '<span class="time-create">' + data.created_at + '</span>' + '</li>');
     }
-
-    $window.load(function() {
-        loadMessage(100);
-    });
 
 
     $window.keydown(function(event) {
@@ -55,10 +51,11 @@ $(function() {
         }
     });
 
-    socket.on('load old messages', function(messages){
-      for (var i = 0; i < messages.length; i++) {
-        displayMessage(messages[i]);
-      }
+    socket.on('load old messages', function(messages) {
+        for (var i = 0; i < messages.length; i++) {
+            displayMessage(messages[i]);
+        }
+        loadMessage(100);
     });
 
     socket.on('chat message', function(data) {

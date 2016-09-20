@@ -1,10 +1,16 @@
-extends layout
+doctype html
+html
+    head
+        title= title
+        link(rel='stylesheet', href='/stylesheets/chat.css')
+    body
+        if(user)
+          p(style='position:fixed;display:block;z-index:99;right:15px;background:#ff6600') #{user.username} had login
+          section(class='content')
+            ul(id='messages')
 
-block content
-    .container
-        if (user)
-            p You are currently logged in as #{user.username}
-            p You id #{user._id}
-            a(href='/chat') Chat
-            br
-            a(href="admin/logout") Logout
+            input(type='text' id='m' autocomplete='off' placeholder='Your message')
+
+        script(src='/socket.io/socket.io.js')
+        script(src='http://code.jquery.com/jquery-1.11.1.js')
+        script(src='/javascripts/socket.js')

@@ -2,6 +2,7 @@ var express = require('express'),
     router = express.Router(),
     mongoose = require('mongoose'),
     bodyParser = require('body-parser'),
+    cookieParser = require('cookie-parser'),
     passport = require('passport'),
     methodOverride = require('method-override');
 
@@ -19,19 +20,6 @@ router.use(methodOverride(function(req, res) {
     }
 }));
 
-function getCurrentTime(t) {
-    var currentTime = t || new Date();
-    var h = currentTime.getHours(),
-        m = currentTime.getMinutes();
-    if (h < 10) {
-        h = '0' + h;
-    }
-    if (m < 10) {
-        m = '0' + m;
-    }
-    return h + ':' + m;
-}
-
 
 /* GET home page. */
 router.route('/')
@@ -43,13 +31,12 @@ router.route('/')
         }
     })
     .get(function(req, res, next) {
-      res.render('chat');
+        res.render('chat');
     });
 
 module.exports = function(io) {
 
     io.on('connection', function(socket) {
-
         mongoose.model('Messages').find({}, function(err, messages) {
             if (err) throw err;
             socket.emit('load old messages', messages);

@@ -9,6 +9,11 @@ var passport = require('passport');
 var LocalStrategy = require('passport-local').Strategy;
 var flash = require('connect-flash');
 
+var passportSocketIo = require("passport.socketio");
+
+const session = require('express-session');
+const MongoStore = require('connect-mongo')(session);
+
 var app = express();
 
 app.io = require('socket.io')();
@@ -20,15 +25,22 @@ var db = require('./model/db'),
 var routes = require('./routes/index'),
     users = require('./routes/users'),
     todos = require('./routes/todo'),
-    chats = require('./routes/chat')(app.io),
-    admins = require('./routes/admin');
+    admins = require('./routes/admin')(app.io);
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
-// Setting session
-
+app.all('*', function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Content-type,Accept,X-Access-Token,X-Key');
+  if (req.method == 'OPTIONS') {
+    res.status(200).end();
+  } else {
+    next();
+  }
+});
 
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
@@ -41,10 +53,11 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Setup Session
-app.use(require('express-session')({
+app.use(session({
     secret: 'a4f8071f-c873-4447-8ee2',
     resave: false,
-    saveUninitialized: true
+    key: 'connect.sid',
+    saveUninitialized: true,
 }));
 
 app.use(passport.initialize());
@@ -55,7 +68,6 @@ app.use(passport.session());
 app.use('/', routes);
 app.use('/users', users);
 app.use('/todos', todos);
-app.use('/chat', chats);
 app.use('/admin', admins);
 
 
@@ -67,6 +79,31 @@ passport.deserializeUser(Account.deserializeUser());
 
 // https://namvuhn.wordpress.com/2016/05/10/nodejs-tim-hieu-ve-module-mongoose-trong-nodejs/
 
+
+app.io.use(passportSocketIo.authorize({
+    cookieParser: cookieParser, // the same middleware you registrer in express
+    key: 'connect.sid', // the name of the cookie where express/connect stores its session_id
+    secret: 'a4f8071f-c873-4447-8ee2', // the session_secret to parse the cookie
+    store: new MongoStore({
+        url: 'mongodb://localhost/testdb'
+    }), // we NEED to use a sessionstore. no memorystore please
+    success: onAuthorizeSuccess, // *optional* callback on success - read more below
+    fail: onAuthorizeFail, // *optional* callback on fail/error - read more below
+    passport: passport
+}));
+
+function onAuthorizeSuccess(data, accept) {
+    console.log('successful connection to socket.io');
+    accept(null, true);
+}
+
+function onAuthorizeFail(data, message, error, accept) {
+    if (error)
+        throw new Error(message);
+    console.log('failed connection to socket.io:', message);
+    accept(null, false);
+
+}
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
