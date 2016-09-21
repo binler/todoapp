@@ -27,22 +27,22 @@ $(function() {
      */
     function loadMessage(speed) {
         var s = speed || 500;
-        var h = $("#messages").get(0).scrollHeight;
-        $("#messages").animate({
+        var h = $(".chat-content").get(0).scrollHeight;
+        $(".chat-content").animate({
             scrollTop: h
         }, s);
     }
 
     function displayMessage(data) {
-        $('#messages').append('<li>' + data.message + '</br>' + '<span class="time-create">' + data.created_at + '</span>' + '</li>');
+        $('.message-area').append('<li>' + data.message + '</br>' + '<span class="time-create">' + data.created_at + '</span>' + '</li>');
     }
 
 
     $window.keydown(function(event) {
         if (event.which === 13) {
-            var inputMessage = $('#m').val();
+            var inputMessage = $('#chat-input-textarea').val();
             if (inputMessage) {
-                $('#m').val('');
+                $('#chat-input-textarea').val('');
                 socket.emit('chat message', {
                     message: inputMessage,
                     created_at: getCurrentTime()

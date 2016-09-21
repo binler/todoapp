@@ -1,0 +1,14 @@
+doctype html
+html
+    head
+        title= title
+        link(rel='stylesheet', href='/stylesheets/pure-min.css')
+        link(rel='stylesheet', href='/stylesheets/gdit-app.css')
+        link(rel='stylesheet', href='/stylesheets/grids-responsive-min.css')
+    body
+        if(user)
+          block content
+
+        script(src='/socket.io/socket.io.js')
+        script(src='http://code.jquery.com/jquery-1.11.1.js')
+        script(src='/javascripts/socket.js')

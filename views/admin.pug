@@ -1,16 +1,10 @@
-doctype html
-html
-    head
-        title= title
-        link(rel='stylesheet', href='/stylesheets/chat.css')
-    body
-        if(user)
-          p(style='position:fixed;display:block;z-index:99;right:15px;background:#ff6600') #{user.username} had login
-          section(class='content')
-            ul(id='messages')
+extends template/main_layout
 
-            input(type='text' id='m' autocomplete='off' placeholder='Your message')
-
-        script(src='/socket.io/socket.io.js')
-        script(src='http://code.jquery.com/jquery-1.11.1.js')
-        script(src='/javascripts/socket.js')
+block content
+    div(class='pure-g gdit-main')
+        include partial/toolbar
+        div(class='pure-u-1 pure-u-md-7-8 gdit-content')
+            section(class='chat-content')
+                ul(id='messages-box' class='message-area')
+            section(class='chat-textarea')
+                input(type='text' class='chat-input_text-area' id='chat-input-textarea' autocomplete='off' placeholder='Your message')

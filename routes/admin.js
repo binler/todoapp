@@ -96,6 +96,7 @@ router.get('/logout', function(req, res, next) {
 module.exports = function(io) {
 
     io.on('connection', function(socket) {
+        console.log(socket.request.user);
         mongoose.model('Messages').find({}, function(err, messages) {
             if (err) throw err;
             socket.emit('load old messages', messages);
