@@ -7,6 +7,7 @@ var messageSchema = new mongoose.Schema({
         required: true
     },
     created_at : {type: Date, default: Date.now()},
-    // _creator : { type: Schema.Types.ObjectId, ref: 'accounts' }
+    _creator : { type: Schema.Types.ObjectId, ref: 'accounts' },
+    room_id : { type: Schema.Types.ObjectId, ref: 'Rooms' }
 });
 mongoose.model('Messages', messageSchema);

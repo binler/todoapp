@@ -1,0 +1,10 @@
+extends template/main_layout
+
+block content
+    div(class='pure-g gdit-main')
+        include partial/toolbar
+        div(class='pure-u-1 pure-u-md-7-8 gdit-content')
+            section(class='chat-content')
+                ul(id='messages-box' class='message-area')
+            section(class='chat-textarea')
+                input(type='text' class='chat-input_text-area' id='chat-input-textarea' autocomplete='off' placeholder='Your message')

@@ -1,7 +1,7 @@
 $(function() {
     var socket = io.connect('http://localhost:3000');
     var $window = $(window);
-
+    var roomItem = $('.room_item');
 
     /**
      * Get Current time when submit message
@@ -27,16 +27,17 @@ $(function() {
      */
     function loadMessage(speed) {
         var s = speed || 500;
-        var h = $(".chat-content").get(0).scrollHeight;
-        $(".chat-content").animate({
-            scrollTop: h
-        }, s);
+        if ($(".chat-content").length) {
+            var h = $(".chat-content").get(0).scrollHeight;
+            $(".chat-content").animate({
+                scrollTop: h
+            }, s);
+        }
     }
 
     function displayMessage(data) {
         $('.message-area').append('<li>' + data.message + '</br>' + '<span class="time-create">' + data.created_at + '</span>' + '</li>');
     }
-
 
     $window.keydown(function(event) {
         if (event.which === 13) {
@@ -51,7 +52,16 @@ $(function() {
         }
     });
 
-    socket.on('load old messages', function(messages) {
+    roomItem.each(function(i) {
+        var room = {};
+        room.id = $(this).parent().attr('data-id');
+        room.name = $(this).text();
+        $(this).click(function() {
+            socket.emit('switchRoom', room);
+        });
+    });
+
+    socket.on('load messages', function(room,messages) {
         for (var i = 0; i < messages.length; i++) {
             displayMessage(messages[i]);
         }
@@ -61,6 +71,10 @@ $(function() {
     socket.on('chat message', function(data) {
         displayMessage(data);
         loadMessage(500);
+    });
+
+    socket.on('switchRoom', function(room){
+      $('.message-area').append('<li>' + 'Bạn đã vào phòng ' +room.name + '</li>');
     });
 
 

@@ -20,6 +20,7 @@ app.io = require('socket.io')();
 
 var db = require('./model/db'),
     todo = require('./model/todo'),
+    room = require('./model/rooms'),
     mesage = require('./model/mesage');
 
 var routes = require('./routes/index'),

@@ -74,7 +74,7 @@ html, body {
 /************ Panel Account ****************/
 
 .account__panel {
-    padding: 30px 10px;
+    padding: 10px 30px 30px;
     text-align: center;
     color: #fff;
 }
@@ -85,11 +85,13 @@ html, body {
 }
 
 .account_img {
-    width: 160px;
-    height: 160px;
     display: block;
     margin: 0px auto;
     border-radius: 50%;
+    height: auto;
+    width: auto;
+    max-width: 100%;
+    height: auto;
 }
 
 
@@ -114,6 +116,8 @@ html, body {
     padding: 10px 10px 10px 20px;
     font-weight: bolder;
     display: block;
+    color: #fff;
+    text-decoration: none;
 }
 .group__panel .group_list li a:hover {
   background:rgba(255, 255, 255, 0.2);
@@ -125,6 +129,9 @@ html, body {
   width: 100%;
   background: green;
   text-align: center;
-  vertical-align: middle;
+  padding-top: 18px;
   display: block;
+  text-decoration: none;
+  color:#fff;
+  font-weight: bolder;
 }
