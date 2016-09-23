@@ -2,6 +2,7 @@ $(function() {
     var socket = io.connect('http://localhost:3000');
     var $window = $(window);
     var roomItem = $('.room_item');
+    var room = {};
 
     /**
      * Get Current time when submit message
@@ -51,17 +52,25 @@ $(function() {
             }
         }
     });
-
-    roomItem.each(function(i) {
-        var room = {};
-        room.id = $(this).parent().attr('data-id');
-        room.name = $(this).text();
-        $(this).click(function() {
+    roomItem.click(function(e) {
+        if (!$(this).hasClass('focus')) {
+            $('.group__panel .group_list li a').removeClass('focus');
+            $(this).addClass('focus');
+            room.id = $(this).parent().attr('data-id');
+            room.name = $(this).text();
+            $('.chat-content .message-area li').remove();
             socket.emit('switchRoom', room);
-        });
+        } else {
+            e.preventDefault();
+        }
+
+        // room.id = $(this).parent().attr('data-id');
+        // room.name = $(this).text();
+        // $('.chat-content .message-area li').remove();
+        // socket.emit('switchRoom', room);
     });
 
-    socket.on('load messages', function(room,messages) {
+    socket.on('load messages', function(room, messages) {
         for (var i = 0; i < messages.length; i++) {
             displayMessage(messages[i]);
         }
@@ -73,8 +82,8 @@ $(function() {
         loadMessage(500);
     });
 
-    socket.on('switchRoom', function(room){
-      $('.message-area').append('<li>' + 'Bạn đã vào phòng ' +room.name + '</li>');
+    socket.on('switchRoom', function(users, room) {
+        $('.message-area').append('<li>' + users.username + ' đã vào phòng!</li>');
     });
 
 

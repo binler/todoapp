@@ -37,7 +37,7 @@ router.route('/')
         });
     });
 
-router.route('/room')
+router.route('/create-room')
     .all(function(req, res, next) {
         if (req.isAuthenticated()) {
             next();
@@ -60,17 +60,18 @@ router.route('/room')
     });
 
 
-// router.route('/room/:room')
-//   .get(function(req, res, next){
-//     mongoose.model('Rooms').find({}, function(err, results){
-//       if(err) next(err);
-//       res.render('chat_room', {
-//           user: req.user,
-//           title: 'Room: ' + req.params.room,
-//           rooms: results
-//       });
-//     });
-//   });
+router.route('/room/:roomname')
+  .get(function(req, res, next){
+    console.log(res.socket);
+    mongoose.model('Rooms').find({}, function(err, results){
+      if(err) next(err);
+      res.render('chat_room', {
+          user: req.user,
+          title: 'Room: ' + req.params.roomname,
+          rooms: results
+      });
+    });
+  });
 
 
 router.route('/register')
@@ -134,21 +135,21 @@ router.get('/logout', function(req, res, next) {
 
 
 module.exports = function(io) {
-
     io.on('connection', function(socket) {
         var users = socket.request.user;
         var room = {};
         room.id = '57e389a0bfda7f1ca1932168';
         room.name = 'vtv3';
 
-        function loadMessageRoom(){
-          mongoose.model('Messages').find({room_id : room.id}, function(err, messages) {
+
+        function loadMessageRoom(id){
+          mongoose.model('Messages').find({room_id : id}, function(err, messages) {
               if (err) throw err;
               socket.emit('load messages', room, messages);
           });
         }
 
-        loadMessageRoom();
+        // loadMessageRoom();
         socket.join(room.id);
         socket.on('chat message', function(data) {
             mongoose.model('Messages').create({
@@ -164,11 +165,11 @@ module.exports = function(io) {
         });
 
         socket.on('switchRoom', function(newRoom){
-          socket.leave(room.id);
-          socket.join(newRoom.id);
-          room = newRoom;
-          loadMessageRoom();
-          socket.emit('switchRoom', newRoom);
+            socket.leave(room.id);
+            room = newRoom;
+            socket.join(newRoom.id);
+            loadMessageRoom(room.id);
+            socket.broadcast.to(room.id).emit('switchRoom', users, newRoom);
         });
 
 

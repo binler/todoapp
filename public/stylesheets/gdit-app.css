@@ -122,6 +122,9 @@ html, body {
 .group__panel .group_list li a:hover {
   background:rgba(255, 255, 255, 0.2);
 }
+.group__panel .group_list li a.focus {
+  background:rgba(255, 255, 255, 0.2);
+}
 .btn-group-plus {
   position: absolute;
   bottom: 0;
