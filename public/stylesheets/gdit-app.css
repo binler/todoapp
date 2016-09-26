@@ -22,6 +22,7 @@ html, body {
     /* fallback for old browsers */
     background: -webkit-linear-gradient(to left, #141E30, #243B55);
     /* Chrome 10-25, Safari 5.1-6 */
+    background: -webkit-linear-gradient(right, #141E30, #243B55);
     background: linear-gradient(to left, #141E30, #243B55);
     /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
     color: #fff;
@@ -45,7 +46,7 @@ html, body {
 
 .gdit-content .chat-textarea {
     position: absolute;
-    height: 70px;
+    height: 50px;
     bottom: 0;
     right: 0;
     left: 0;
@@ -119,22 +120,25 @@ html, body {
     color: #fff;
     text-decoration: none;
 }
+
 .group__panel .group_list li a:hover {
-  background:rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.2);
 }
+
 .group__panel .group_list li a.focus {
-  background:rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.2);
 }
+
 .btn-group-plus {
-  position: absolute;
-  bottom: 0;
-  height:50px;
-  width: 100%;
-  background: green;
-  text-align: center;
-  padding-top: 18px;
-  display: block;
-  text-decoration: none;
-  color:#fff;
-  font-weight: bolder;
+    position: absolute;
+    bottom: 0;
+    height: 50px;
+    width: 100%;
+    background: green;
+    text-align: center;
+    padding-top: 18px;
+    display: block;
+    text-decoration: none;
+    color: #fff;
+    font-weight: bolder;
 }

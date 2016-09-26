@@ -12,5 +12,5 @@ div(class='pure-u-1 pure-u-md-1-8 gdit-toolbar')
         ul(class='group_list')
             each val in rooms
               li(data-id=val._id)
-                a(href='/admin/room/'+val.name class='room_item' id='room_item') #{val.name}
+                a(href='javascript:void(0)' class='room_item' id='room_item') #{val.name}
     a(class='btn-group-plus' href='/admin/create-room') Add Room
