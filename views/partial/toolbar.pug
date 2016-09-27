@@ -7,10 +7,15 @@ div(class='pure-u-1 pure-u-md-1-8 gdit-toolbar')
                 a(href='/admin/profile') Profile
             div(class='pure-u-1-2')
                 a(href='/admin/logout') Logout
-    section(class='group__panel')
-        h1(class='group_title') Group
-        ul(class='group_list')
+    section(class='gdit__panel')
+        h1(class='gdit_title') Group
+        ul(class='gdit_list group_list')
             each val in rooms
-              li(data-id=val._id)
-                a(href='javascript:void(0)' class='room_item' id='room_item') #{val.name}
+                li(data-id=val._id)
+                    a(href='javascript:void(0)' class='room_item' id='room_item') #{val.name}
+
+    section(class='gdit__panel')
+        h1(class='gdit_title') Users
+        ul(class='gdit_list users_list')
+
     a(class='btn-group-plus' href='/admin/create-room') Add Room

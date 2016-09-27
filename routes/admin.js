@@ -138,22 +138,37 @@ module.exports = function(io) {
         id: '',
         name: ''
     };
+
     io.on('connection', function(socket) {
         var users = socket.request.user;
-
+        // var clientsCount = io.engine.clientsCount  count account connect socket io
         if (room.id !== '') {
             socket.join(room.id);
             loadMessageRoom(room.id);
         }
 
         function loadMessageRoom(id) {
-            mongoose.model('Messages').find({
-                room_id: id
-            }, function(err, messages) {
-                if (err) throw err;
-                socket.emit('load messages', room, messages);
-            });
+            mongoose.model('Messages')
+                .find({
+                    room_id: id
+                })
+                .populate('_creator')
+                .exec(function(err, messages) {
+                    if (err) throw err;
+                    socket.emit('load messages', room, messages);
+                });
         }
+
+        function loadUsers() {
+            mongoose.model('accounts')
+                .find()
+                .exec(function(err, alluser) {
+                    if (err) throw err;
+                    socket.emit('load users', alluser);
+                });
+        }
+        loadUsers();
+
 
         // loadMessageRoom();
         socket.on('chat message', function(data) {
@@ -164,7 +179,7 @@ module.exports = function(io) {
                 room_id: room.id
             }, function(err, result) {
                 if (err) throw err;
-                io.to(room.id).emit('chat message', data);
+                io.to(room.id).emit('chat message', data, users);
             });
 
         });

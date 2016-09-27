@@ -22,9 +22,21 @@ $(function() {
         }
     }
 
-    function displayMessage(data) {
-        $('.message-area').append('<li>' + data.message + '</br>' + '<span class="time-create">' + data.created_at.toTimeString() + '</span>' + '</li>');
+    function displayMessage(data, users) {
+        var username = (data._creator) ? data._creator.username : users.username;
+        $('.message-area').append('<li>' + '<span class="user-info">' + username + '</span></br>' + data.message + '</br>' + '<span class="time-create">' + data.created_at + '</span>' + '</li>');
     }
+
+    function displayUsers(alluser){
+        var view = '<li><a class="user_item">' + user.username + '</a></li>';
+        $('.users_list').append(view);
+    }
+
+    socket.on('load users', function(alluser, users){
+      for (var i = 0; i < users.length; i++) {
+          displayUsers(users[i]);
+      }
+    });
 
     roomItem.click(function(e) {
         if (!$(this).hasClass('focus')) {
@@ -57,13 +69,15 @@ $(function() {
         }
         loadMessage(100);
     });
-    socket.on('chat message', function(data) {
-        displayMessage(data);
+
+    socket.on('chat message', function(data, users) {
+        displayMessage(data, users);
         loadMessage(500);
     });
     socket.on('switchRoom', function(users, room) {
         $('.message-area').append('<li>' + users.username + ' đã vào phòng!</li>');
     });
+
 
 
 });

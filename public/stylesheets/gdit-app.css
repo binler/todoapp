@@ -98,22 +98,22 @@ html, body {
 
 /************ End Panel Account ****************/
 
-.group__panel .group_title {
+.gdit__panel .gdit_title {
     text-align: center;
     margin-top: 10px;
     margin-bottom: 5px;
 }
 
-.group__panel .group_list {
+.gdit__panel .gdit_list {
     padding: 0;
     margin: 0;
 }
 
-.group__panel .group_list li {
+.gdit__panel .gdit_list li {
     list-style: none;
 }
 
-.group__panel .group_list li a {
+.gdit__panel .gdit_list li a {
     padding: 10px 10px 10px 20px;
     font-weight: bolder;
     display: block;
@@ -121,11 +121,15 @@ html, body {
     text-decoration: none;
 }
 
-.group__panel .group_list li a:hover {
+.gdit__panel .gdit_list li a.online  {
+    color: rgb(45, 238, 13);
+}
+
+.gdit__panel .gdit_list li a:hover {
     background: rgba(255, 255, 255, 0.2);
 }
 
-.group__panel .group_list li a.focus {
+.gdit__panel .gdit_list li a.focus {
     background: rgba(255, 255, 255, 0.2);
 }
 
