@@ -28,19 +28,19 @@ $(function() {
     }
 
     function displayUsers(alluser){
-        var view = '<li><a class="user_item">' + user.username + '</a></li>';
+        var view = '<li><a class="user_item">' + alluser.username + '</a></li>';
         $('.users_list').append(view);
     }
 
-    socket.on('load users', function(alluser, users){
-      for (var i = 0; i < users.length; i++) {
-          displayUsers(users[i]);
+    socket.on('load users', function(alluser){
+      for (var i = 0; i < alluser.length; i++) {
+          displayUsers(alluser[i]);
       }
     });
 
     roomItem.click(function(e) {
         if (!$(this).hasClass('focus')) {
-            $('.group__panel .group_list li a').removeClass('focus');
+            $('.gdit__panel .gdit_list li a').removeClass('focus');
             $(this).addClass('focus');
             room.id = $(this).parent().attr('data-id');
             room.name = $(this).text();

@@ -142,6 +142,7 @@ module.exports = function(io) {
     io.on('connection', function(socket) {
         var users = socket.request.user;
         // var clientsCount = io.engine.clientsCount  count account connect socket io
+        console.log(socket.request);
         if (room.id !== '') {
             socket.join(room.id);
             loadMessageRoom(room.id);
@@ -189,6 +190,8 @@ module.exports = function(io) {
                 socket.leave(room.id);
             }
             room = newRoom;
+            socket.request.room = newRoom;
+            socket.request.room.save();
             socket.join(newRoom.id);
             loadMessageRoom(newRoom.id);
             socket.broadcast.to(newRoom.id).emit('switchRoom', users, newRoom);
