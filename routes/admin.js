@@ -138,11 +138,14 @@ module.exports = function(io) {
         id: '',
         name: ''
     };
-
+    var useronline = [];
     io.on('connection', function(socket) {
         var users = socket.request.user;
+        useronline.push(users._id);
+        var interval = setInterval(function(){
+          io.emit('check online', useronline);
+        }, 500);
         // var clientsCount = io.engine.clientsCount  count account connect socket io
-        console.log(socket.request);
         if (room.id !== '') {
             socket.join(room.id);
             loadMessageRoom(room.id);
@@ -162,16 +165,13 @@ module.exports = function(io) {
 
         function loadUsers() {
             mongoose.model('accounts')
-                .find()
+                .find({ _id : {$ne: users._id} })
                 .exec(function(err, alluser) {
                     if (err) throw err;
                     socket.emit('load users', alluser);
                 });
         }
         loadUsers();
-
-
-        // loadMessageRoom();
         socket.on('chat message', function(data) {
             mongoose.model('Messages').create({
                 message: data.message,
@@ -190,15 +190,16 @@ module.exports = function(io) {
                 socket.leave(room.id);
             }
             room = newRoom;
-            socket.request.room = newRoom;
-            socket.request.room.save();
             socket.join(newRoom.id);
             loadMessageRoom(newRoom.id);
             socket.broadcast.to(newRoom.id).emit('switchRoom', users, newRoom);
         });
 
         socket.on('disconnect', function() {
-            console.log('Got disconnect!');
+            var index = useronline.indexOf(users._id);
+            useronline.splice(index, 1);
+            io.emit('check online', useronline);
+            console.log('disconnect');
         });
 
     });

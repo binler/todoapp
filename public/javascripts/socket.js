@@ -6,6 +6,7 @@ $(function() {
         id: '',
         name: ''
     };
+    var a = [];
 
     /**
      * Scroll to bottom when submit message to see newest message
@@ -27,16 +28,29 @@ $(function() {
         $('.message-area').append('<li>' + '<span class="user-info">' + username + '</span></br>' + data.message + '</br>' + '<span class="time-create">' + data.created_at + '</span>' + '</li>');
     }
 
-    function displayUsers(alluser){
-        var view = '<li><a class="user_item">' + alluser.username + '</a></li>';
+    function displayUsers(alluser) {
+        var view = '<li><a class="user_item" data-id="'+alluser._id+'">' + alluser.username + '</a></li>';
         $('.users_list').append(view);
     }
 
-    socket.on('load users', function(alluser){
-      for (var i = 0; i < alluser.length; i++) {
-          displayUsers(alluser[i]);
-      }
+    socket.on('load users', function(alluser) {
+        for (var i = 0; i < alluser.length; i++) {
+            displayUsers(alluser[i]);
+        }
     });
+
+    socket.on('check online', function(useronline) {
+        var userItem = $('.user_item');
+        userItem.each(function(index) {
+            var idUser = $(this).attr('data-id');
+            if (useronline.indexOf(idUser) !== -1) {
+                $(this).addClass('online');
+            } else {
+                $(this).removeClass('online');
+            }
+        });
+    });
+
 
     roomItem.click(function(e) {
         if (!$(this).hasClass('focus')) {
