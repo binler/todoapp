@@ -142,8 +142,8 @@ module.exports = function(io) {
     io.on('connection', function(socket) {
         var users = socket.request.user;
         useronline.push(users._id);
-        var interval = setInterval(function(){
-          io.emit('check online', useronline);
+        var interval = setInterval(function() {
+            io.emit('check online', useronline);
         }, 500);
         // var clientsCount = io.engine.clientsCount  count account connect socket io
         if (room.id !== '') {
@@ -162,16 +162,29 @@ module.exports = function(io) {
                     socket.emit('load messages', room, messages);
                 });
         }
-
-        function loadUsers() {
+        socket.on('load user', function(data) {
             mongoose.model('accounts')
-                .find({ _id : {$ne: users._id} })
+                .find({
+                    _id: {
+                        $ne: users._id
+                    }
+                })
                 .exec(function(err, alluser) {
                     if (err) throw err;
-                    socket.emit('load users', alluser);
+                    socket.emit('allusers', alluser);
                 });
-        }
-        loadUsers();
+
+        });
+
+        socket.on('load rooms', function(data) {
+            mongoose.model('Rooms')
+                .find({})
+                .exec(function(err, allroom) {
+                    if (err) throw err;
+                    socket.emit('allroom', allroom);
+                });
+        });
+
         socket.on('chat message', function(data) {
             mongoose.model('Messages').create({
                 message: data.message,

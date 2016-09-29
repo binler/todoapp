@@ -33,10 +33,20 @@ $(function() {
         $('.users_list').append(view);
     }
 
-    socket.on('load users', function(alluser) {
+    socket.on('allusers', function(alluser) {
         for (var i = 0; i < alluser.length; i++) {
             displayUsers(alluser[i]);
         }
+    });
+
+    socket.on('allrooms', function(allroom) {
+        for (var i = 0; i < alluser.length; i++) {
+            displayUsers(alluser[i]);
+        }
+    });
+
+    socket.on('connect', function(){
+      socket.emit('load user', {check : false});
     });
 
     socket.on('check online', function(useronline) {
