@@ -138,17 +138,19 @@ module.exports = function(io) {
         id: '',
         name: ''
     };
+    var roomcurrent = {};
     var useronline = [];
     io.on('connection', function(socket) {
         var users = socket.request.user;
         useronline.push(users._id);
+        console.log(roomcurrent);
         var interval = setInterval(function() {
             io.emit('check online', useronline);
         }, 500);
         // var clientsCount = io.engine.clientsCount  count account connect socket io
-        if (room.id !== '') {
-            socket.join(room.id);
-            loadMessageRoom(room.id);
+        if (roomcurrent[users._id]) {
+            socket.join(roomcurrent[users._id].id);
+            loadMessageRoom(roomcurrent[users._id].id);
         }
 
         function loadMessageRoom(id) {
@@ -176,33 +178,25 @@ module.exports = function(io) {
 
         });
 
-        socket.on('load rooms', function(data) {
-            mongoose.model('Rooms')
-                .find({})
-                .exec(function(err, allroom) {
-                    if (err) throw err;
-                    socket.emit('allroom', allroom);
-                });
-        });
-
         socket.on('chat message', function(data) {
             mongoose.model('Messages').create({
                 message: data.message,
                 created_at: data.created_at,
                 _creator: users._id,
-                room_id: room.id
+                room_id: roomcurrent[users._id].id
             }, function(err, result) {
                 if (err) throw err;
-                io.to(room.id).emit('chat message', data, users);
+                io.to(roomcurrent[users._id].id).emit('chat message', data, users);
             });
 
         });
 
         socket.on('switchRoom', function(newRoom) {
-            if (room.id !== '') {
-                socket.leave(room.id);
+            if (roomcurrent[users._id]) {
+                socket.leave(roomcurrent[users._id].id);
             }
-            room = newRoom;
+            // room = newRoom;
+            roomcurrent[users._id] = newRoom;
             socket.join(newRoom.id);
             loadMessageRoom(newRoom.id);
             socket.broadcast.to(newRoom.id).emit('switchRoom', users, newRoom);

@@ -39,12 +39,6 @@ $(function() {
         }
     });
 
-    socket.on('allrooms', function(allroom) {
-        for (var i = 0; i < alluser.length; i++) {
-            displayUsers(alluser[i]);
-        }
-    });
-
     socket.on('connect', function(){
       socket.emit('load user', {check : false});
     });
